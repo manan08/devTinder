@@ -22,8 +22,6 @@ router.post('/signup', async (req, res) => {
 
     const userData = { ...data, password: hashedPassword };
 
-    console.log('UserData', userData);
-
     // CREATING A NEW INSTNACE OF USER MODEL
     const user = new User(userData);
 
@@ -47,7 +45,7 @@ router.post('/login', async (req, res) => {
         }
 
         const isValidPassword = await user.comparePassword(password);
-        console.log(isValidPassword)
+
         if (isValidPassword) {
 
             const token = user.generateAuthToken();
