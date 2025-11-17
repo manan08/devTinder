@@ -17,7 +17,6 @@ app.use('/', connectionRequestRouter);
 app.use('/', userRouter);
 
 
-
 connectDB()
     .then(() => {
         console.log('Connected to Database...');
