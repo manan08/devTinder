@@ -7,14 +7,37 @@ const ConnectionRequest = require('../models/connectionRequest');
 const USER_SAFE_DATA = ['firstName', 'lastName', 'age']
 
 // GET /feed -FEED API - TO FETCH USER DATA
-router.get('/feed', async (req, res) => {
+router.get('/feed', authUser, async (req, res) => {
     try {
-        const users = await User.find({});
-        if (users.length > 0) {
-            res.send({ status: 'OK', message: 'Data fetched successfuly', data: users });
-        } else {
-            res.status(404).send({ status: 'false', message: 'Error fetching data', data: [] })
-        }
+
+        const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = (limit > 50) ? 50 : limit;
+        const skip = (page - 1) * limit;
+
+        const connectionRequests = await ConnectionRequest.find({
+            '$or': [
+                { 'fromUserId': req.user._id },
+                { 'toUserId': req.user._id }
+            ]
+        }).select('fromUserId toUserId');
+
+        const hideFromFeed = new Set();
+
+        connectionRequests.forEach(request => {
+            hideFromFeed.add(request.fromUserId.toString());
+            hideFromFeed.add(request.toUserId.toString());
+        });
+
+        const data = await User.find({
+            _id: { '$nin': Array.from(hideFromFeed) }
+        })
+            .select(USER_SAFE_DATA)
+            .skip(skip)
+            .limit(limit);
+
+        res.json({ status: 'success', message: 'Data fetched successfully!', data })
+
     } catch (error) {
         console.error('Error fetching feed details', error);
         res.status(500).send({ status: 'false', message: 'Error fetching user', data: [] })
