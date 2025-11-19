@@ -58,7 +58,6 @@ router.get('/user/request/received', authUser, async (req, res) => {
     }
 })
 
-
 router.get('/user/connections', authUser, async (req, res) => {
     try {
         const connectionRequests = await ConnectionRequest.find({

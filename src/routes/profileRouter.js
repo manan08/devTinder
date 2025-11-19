@@ -37,6 +37,7 @@ router.patch('/profile/edit', authUser, async (req, res) => {
     }
 })
 
+
 router.patch('/profile/password', authUser, async (req, res) => {
     try {
         const { password } = req.body;
