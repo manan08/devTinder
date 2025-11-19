@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
             const token = user.generateAuthToken();
             res.cookie('token', token);
 
-            return res.send({ status: 'Ok', message: 'Login Successful!' })
+            return res.send({ status: 'Ok', message: 'Login Successful!', data: user })
         } else {
             return res.status(400).send({ status: 'Error', message: 'Invalid Credentials' });
         }
