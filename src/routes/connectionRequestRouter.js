@@ -1,11 +1,11 @@
 const express = require('express');
-const { authUser } = require('../middlewares/auth');
+const { userAuth } = require("../middlewares/auth");
 const User = require('../models/user');
 const ConnectionRequest = require('../models/connectionRequest');
 const router = express.Router();
 
 // SEND CONNECTION REQUEST 
-router.post('/request/send/:status/:toUserId', authUser, async (req, res) => {
+router.post('/request/send/:status/:toUserId', userAuth, async (req, res) => {
     try {
 
         const fromUserId = req.user._id;
@@ -50,7 +50,7 @@ router.post('/request/send/:status/:toUserId', authUser, async (req, res) => {
 })
 
 // REVIEW CONNECTION REQUEST
-router.post('/request/review/:status/:requestId', authUser, async (req, res) => {
+router.post('/request/review/:status/:requestId', userAuth, async (req, res) => {
     try {
         const { status, requestId } = req.params;
 

@@ -1,73 +1,71 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/user');
-const { validateSignUpData } = require('../utils/validations');
 
+const { validateSignUpData } = require("../utils/validations");
+const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
-// POST /signup
-router.post('/signup', async (req, res) => {
-
-    const data = validateSignUpData(req);
-
-    const { emailId, password } = data;
-
-    // Check if user already exists
-    const isUserExist = await User.findOne({ emailId });
-    if (isUserExist) {
-        return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // Hash the password
-    const hashedPassword = await User.hashPassword(password);
-
-    const userData = { ...data, password: hashedPassword };
-
-    // CREATING A NEW INSTNACE OF USER MODEL
-    const user = new User(userData);
-
+router.post("/signup", async (req, res) => {
     try {
-        await user.save();
-        return res.status(201).send({ status: 'OK', message: 'User Created successfully!' });
-    } catch (error) {
-        console.error('Error adding new user', error.message);
-        return res.status(500).send({ status: 'false', message: error.message });
+        // Validation of data
+        validateSignUpData(req);
+
+        const { firstName, lastName, emailId, password } = req.body;
+
+        // Encrypt the password
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        //   Creating a new instance of the User model
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: passwordHash,
+        });
+
+        const savedUser = await user.save();
+        const token = await savedUser.getJWT();
+
+        res.cookie("token", token, {
+            expires: new Date(Date.now() + 8 * 3600000),
+        });
+
+        res.json({ message: "User Added successfully!", data: savedUser });
+    } catch (err) {
+        res.status(400).send("ERROR : " + err.message);
     }
+});
 
-})
-
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
     try {
         const { emailId, password } = req.body;
 
-        const user = await User.findOne({ emailId });
+        const user = await User.findOne({ emailId: emailId });
         if (!user) {
-            return res.status(400).send({ status: 'Error', message: 'Invalid Credentials' });
+            throw new Error("Invalid credentials");
         }
+        const isPasswordValid = await user.validatePassword(password);
 
-        const isValidPassword = await user.comparePassword(password);
+        if (isPasswordValid) {
+            const token = await user.getJWT();
 
-        if (isValidPassword) {
-
-            const token = user.generateAuthToken();
-            res.cookie('token', token);
-
-            return res.send({ status: 'Ok', message: 'Login Successful!', data: user })
+            res.cookie("token", token, {
+                expires: new Date(Date.now() + 8 * 3600000),
+            });
+            res.send(user);
         } else {
-            return res.status(400).send({ status: 'Error', message: 'Invalid Credentials' });
+            throw new Error("Invalid credentials");
         }
-
-    } catch (error) {
-        console.log("Error in Login: ", error.message);
-        return res.status(500).send({ status: 'Error', message: 'Internal Server Error' });
+    } catch (err) {
+        res.status(400).send("ERROR : " + err.message);
     }
-})
+});
 
-router.post('/logout', async (req, res) => {
-    res.cookie('token', null, {
-        expires: new Date(Date.now())
-    })
-
-    res.send('Logout Successful!!')
-})
+router.post("/logout", async (req, res) => {
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+    });
+    res.send("Logout Successful!!");
+});
 
 module.exports = router;

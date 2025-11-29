@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const { authUser } = require('../middlewares/auth');
+const { userAuth } = require('../middlewares/auth');
 const { validateProfileUpdateData } = require('../utils/validations');
 
 // GET /user 
-router.get('/profile', authUser, async (req, res) => {
+router.get('/profile', userAuth, async (req, res) => {
     try {
         const user = req.user;
         res.send({ status: 'OK', message: 'User fetched', data: user })
@@ -16,7 +16,7 @@ router.get('/profile', authUser, async (req, res) => {
 })
 
 // PATCH /profile/edit
-router.patch('/profile/edit', authUser, async (req, res) => {
+router.patch('/profile/edit', userAuth, async (req, res) => {
     try {
         const isValidData = validateProfileUpdateData(req);
 
@@ -38,7 +38,7 @@ router.patch('/profile/edit', authUser, async (req, res) => {
 })
 
 
-router.patch('/profile/password', authUser, async (req, res) => {
+router.patch('/profile/password', userAuth, async (req, res) => {
     try {
         const { password } = req.body;
 
