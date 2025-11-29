@@ -1,30 +1,36 @@
+const validator = require("validator");
+
 const validateSignUpData = (req) => {
-    try {
-        const { firstName, lastName, emailId, password, age, gender } = req.body;
-        return { firstName, lastName, emailId, password, age, gender }
-    } catch (error) {
-        throw new Error('Missing some required parameters: ', error.message);
+    const { firstName, lastName, emailId, password } = req.body;
+    if (!firstName || !lastName) {
+        throw new Error("Name is not valid!");
+    } else if (!validator.isEmail(emailId)) {
+        throw new Error("Email is not valid!");
+    } else if (!validator.isStrongPassword(password)) {
+        throw new Error("Please enter a strong Password!");
     }
-}
+};
 
-const validateProfileUpdateData = (req) => {
-    try {
-        const ALLOWED_EDIT_FIELDS = ['firstName', 'lastName', 'emailId', 'age', 'gender'];
+const validateEditProfileData = (req) => {
+    const allowedEditFields = [
+        "firstName",
+        "lastName",
+        "emailId",
+        "photoUrl",
+        "gender",
+        "age",
+        "about",
+        "skills",
+    ];
 
-        const isValidData = Object.keys(req.body).every(field => ALLOWED_EDIT_FIELDS.includes(field));
+    const isEditAllowed = Object.keys(req.body).every((field) =>
+        allowedEditFields.includes(field)
+    );
 
-        if (!isValidData) {
-            return false;
-        }
-
-        return true;
-    } catch (error) {
-        console.log("Error in Validating Data", error.message);
-        return false;
-    }
-}
+    return isEditAllowed;
+};
 
 module.exports = {
     validateSignUpData,
-    validateProfileUpdateData
-}
+    validateEditProfileData,
+};

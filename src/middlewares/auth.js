@@ -1,36 +1,29 @@
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const authUser = async (req, res, next) => {
+const userAuth = async (req, res, next) => {
     try {
         const { token } = req.cookies;
         if (!token) {
-            return res.status(400).send('Please login again!');
+            return res.status(401).send("Please Login!");
         }
 
-        const decodedData = jwt.verify(token, "DEV@Tinder$123");
+        const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
 
-        const userId = decodedData._id;
+        const { _id } = decodedObj;
 
-        if (!userId) {
-            return res.status(400).send('Inavlid token');
-        }
-
-        const user = await User.findById(userId);
-
+        const user = await User.findById(_id);
         if (!user) {
-            return res.status(400).send('User not found!');
+            throw new Error("User not found");
         }
 
         req.user = user;
         next();
-
-    } catch (error) {
-        console.log('Error in authUser: ', error.message);
-        return res.status(400).send('Invalid Request');
+    } catch (err) {
+        res.status(400).send("ERROR in User Auth: " + err.message);
     }
-}
+};
 
 module.exports = {
-    authUser
-}
+    userAuth,
+};

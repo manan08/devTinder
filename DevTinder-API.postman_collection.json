@@ -1,0 +1,400 @@
+{
+    "info": {
+        "_postman_id": "devtinder-api-collection",
+        "name": "DevTinder API",
+        "description": "Complete API collection for DevTinder - A dating application with user authentication, profile management, and connection requests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Sign Up",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"emailId\": \"john@example.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/signup",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "signup"
+                            ]
+                        },
+                        "description": "Register a new user account. Password must be strong (minimum 8 chars with uppercase, lowercase, numbers, and special chars)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"emailId\": \"john@example.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/login",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "login"
+                            ]
+                        },
+                        "description": "Authenticate user with email and password. Returns JWT token via cookie"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/logout",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout user by clearing JWT token cookie"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Profile Management",
+            "item": [
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/profile",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "profile"
+                            ]
+                        },
+                        "description": "Fetch current user's complete profile. Requires authentication"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"age\": 28,\n  \"gender\": \"male\",\n  \"about\": \"Software developer passionate about web technologies\",\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\"],\n  \"photoUrl\": \"https://example.com/photo.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/profile/edit",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "profile",
+                                "edit"
+                            ]
+                        },
+                        "description": "Update user profile. Only allowed fields can be updated: firstName, lastName, emailId, photoUrl, gender, age, about, skills"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Password",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"password\": \"NewSecurePassword456!\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/profile/password",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "profile",
+                                "password"
+                            ]
+                        },
+                        "description": "Update user password. Must be a strong password"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Connection Requests",
+            "item": [
+                {
+                    "name": "Send Connection Request - Interested",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/request/send/interested/USER_ID_HERE",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "request",
+                                "send",
+                                "interested",
+                                "USER_ID_HERE"
+                            ]
+                        },
+                        "description": "Send a connection request to a user with 'interested' status. Replace USER_ID_HERE with actual MongoDB user ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Send Connection Request - Ignored",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/request/send/ignored/USER_ID_HERE",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "request",
+                                "send",
+                                "ignored",
+                                "USER_ID_HERE"
+                            ]
+                        },
+                        "description": "Send a connection request to a user with 'ignored' status. Replace USER_ID_HERE with actual MongoDB user ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Accept Connection Request",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/request/review/accepted/REQUEST_ID_HERE",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "request",
+                                "review",
+                                "accepted",
+                                "REQUEST_ID_HERE"
+                            ]
+                        },
+                        "description": "Accept a received connection request. Replace REQUEST_ID_HERE with actual request ID"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reject Connection Request",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/request/review/rejected/REQUEST_ID_HERE",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "request",
+                                "review",
+                                "rejected",
+                                "REQUEST_ID_HERE"
+                            ]
+                        },
+                        "description": "Reject a received connection request. Replace REQUEST_ID_HERE with actual request ID"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "User & Feed",
+            "item": [
+                {
+                    "name": "Get Received Requests",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/user/requests/received",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "user",
+                                "requests",
+                                "received"
+                            ]
+                        },
+                        "description": "Fetch all pending 'interested' connection requests received by the current user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Connections",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/user/connections",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "user",
+                                "connections"
+                            ]
+                        },
+                        "description": "Fetch all accepted connections (mutual matches) for the current user"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Feed - Page 1",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/feed?page=1&limit=10",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "feed"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Fetch paginated feed of users. Excludes self and users with existing connection requests. Max limit is 50"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Feed - Custom Pagination",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/feed?page=2&limit=20",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "feed"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "2"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20"
+                                }
+                            ]
+                        },
+                        "description": "Fetch feed with custom pagination. Adjust page and limit parameters as needed"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "request_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
